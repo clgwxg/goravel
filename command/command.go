@@ -132,7 +132,12 @@ func (receiver *ModelCreateCommand) CreateModelStruct(ctx console.Context, colum
 	modelStruct.PackageName("models").ColumnGoField(columns).AllPkg()
 	pwd, _ := os.Getwd()
 	fileUrl := filepath.Join(pwd, "app", "models", tableName+".go")
-
+	if file.Exists(fileUrl) {
+		confirm, _ := ctx.Confirm(fmt.Sprintf("%s model already exists,Is it covered?", tableName))
+		if !confirm {
+			return nil
+		}
+	}
 	if err := file.Create(fileUrl, receiver.populateStub(receiver.getStub(), camelCase(tableName), modelStruct)); err != nil {
 		return err
 	}
