@@ -128,8 +128,6 @@ func (receiver *ModelCreateCommand) Handle(ctx console.Context) error {
 	return nil
 }
 func (receiver *ModelCreateCommand) CreateModelStruct(ctx console.Context, columns []schema.Column, tableName string) error {
-	modelStruct := &ModelStruct{}
-	modelStruct.PackageName("models").ColumnGoField(columns).AllPkg()
 	pwd, _ := os.Getwd()
 	fileUrl := filepath.Join(pwd, "app", "models", tableName+".go")
 	if file.Exists(fileUrl) {
@@ -138,6 +136,8 @@ func (receiver *ModelCreateCommand) CreateModelStruct(ctx console.Context, colum
 			return nil
 		}
 	}
+	modelStruct := &ModelStruct{}
+	modelStruct.PackageName("models").ColumnGoField(columns).AllPkg()
 	if err := file.Create(fileUrl, receiver.populateStub(receiver.getStub(), camelCase(tableName), modelStruct)); err != nil {
 		return err
 	}
@@ -303,7 +303,7 @@ func (m *ModelStruct) ColumnGoField(columns []schema.Column) *ModelStruct {
 	UpdatedAtIndex := -1
 	DeletedAtIndex := -1
 	for i, item := range fields {
-		if item.Field == "Id" {
+		if item.Field == "ID" {
 			IdIndex = i
 		} else if item.Field == "CreatedAt" {
 			CreatedAtIndex = i
