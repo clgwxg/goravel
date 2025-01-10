@@ -130,7 +130,6 @@ func (receiver *ModelCreateCommand) Handle(ctx console.Context) error {
 func (receiver *ModelCreateCommand) CreateModelStruct(ctx console.Context, columns []schema.Column, tableName string) error {
 	modelStruct := &ModelStruct{}
 	modelStruct.PackageName("models").ColumnGoField(columns).AllPkg()
-	fmt.Println((*modelStruct))
 	pwd, _ := os.Getwd()
 	fileUrl := filepath.Join(pwd, "app", "models", tableName+".go")
 
@@ -281,11 +280,16 @@ func (m *ModelStruct) ColumnGoField(columns []schema.Column) *ModelStruct {
 			value = columns[i].Type
 		)
 		jsonTag := fmt.Sprintf("json:\"%s\"", smallCamelCase(key))
+		tags := []string{jsonTag}
+		// id 列 默认主键tag
+		if strings.ToLower(key) == "id" {
+			tags = append(tags, "gorm:\"primaryKey\"")
+		}
 		m.Columns = append(m.Columns, key)
 		field := GoField{
 			Field:     camelCase(key),
 			FieldType: MysqlToGotype[delTypeLen(value)],
-			Tag:       []string{jsonTag},
+			Tag:       tags,
 		}
 		fields = append(fields, field)
 	}
