@@ -195,10 +195,10 @@ StructContent
 type DummyCommandColumns struct {
 StructColunmsType
 }
-func (this *DummyCommand) Columns() DummyCommandColumns{
+func (t *DummyCommand) Columns() DummyCommandColumns{
 	return DummyCommandColumns{
 StructColunms
-	}
+  }
 }
 `
 }
