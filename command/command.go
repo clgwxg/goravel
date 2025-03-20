@@ -138,16 +138,18 @@ func (receiver *ModelCreateCommand) CreateModelStruct(ctx console.Context, colum
 	}
 	modelStruct := &ModelStruct{}
 	modelStruct.PackageName("models").ColumnGoField(columns).AllPkg()
-	if err := file.Create(fileUrl, receiver.populateStub(receiver.getStub(), camelCase(tableName), modelStruct)); err != nil {
+	if err := file.Create(fileUrl, receiver.populateStub(receiver.getStub(), camelCase(tableName), tableName, modelStruct)); err != nil {
 		return err
 	}
 
 	ctx.Success(fmt.Sprintf("Model %s created successfully", tableName))
 	return nil
 }
-func (receiver *ModelCreateCommand) populateStub(stub, structName string, modelStruct *ModelStruct) string {
+func (receiver *ModelCreateCommand) populateStub(stub, structName, tableName string, modelStruct *ModelStruct) string {
 	stub = strings.ReplaceAll(stub, "DummyCommand", structName)
+	stub = strings.ReplaceAll(stub, "columnStruct", structName)
 	stub = strings.ReplaceAll(stub, "DummyPackage", modelStruct.PkgName)
+	stub = strings.ReplaceAll(stub, "TableName", tableName)
 	if len(modelStruct.Pkg) > 0 {
 		importPkg := "import (\n"
 		for _, pkg := range modelStruct.Pkg {
@@ -192,11 +194,14 @@ ImportPkg
 type DummyCommand struct {
 StructContent
 }
-type DummyCommandColumns struct {
+func (m *Menu) TableName() string {
+	return "TableName"
+}
+type columnStructColumnStruct struct {
 StructColunmsType
 }
-func (t *DummyCommand) Columns() DummyCommandColumns{
-	return DummyCommandColumns{
+func DummyCommandColumns() columnStructColumnStruct{
+	return columnStructColumnStruct{
 StructColunms
   }
 }
@@ -285,7 +290,8 @@ func (m *ModelStruct) ColumnGoField(columns []schema.Column) *ModelStruct {
 			value = columns[i].Type
 		)
 		jsonTag := fmt.Sprintf("json:\"%s\"", smallCamelCase(key))
-		tags := []string{jsonTag}
+		formTag := fmt.Sprintf("form:\"%s\"", smallCamelCase(key))
+		tags := []string{jsonTag, formTag}
 		// id 列 默认主键tag
 		if strings.ToLower(key) == "id" {
 			tags = append(tags, "gorm:\"primaryKey\"")
