@@ -149,7 +149,7 @@ func (receiver *ModelCreateCommand) populateStub(stub, structName, tableName str
 	stub = strings.ReplaceAll(stub, "DummyCommand", structName)
 	stub = strings.ReplaceAll(stub, "columnStruct", structName)
 	stub = strings.ReplaceAll(stub, "DummyPackage", modelStruct.PkgName)
-	stub = strings.ReplaceAll(stub, "TableName", tableName)
+	stub = strings.ReplaceAll(stub, "TableNameStr", tableName)
 	if len(modelStruct.Pkg) > 0 {
 		importPkg := "import (\n"
 		for _, pkg := range modelStruct.Pkg {
@@ -195,7 +195,7 @@ type DummyCommand struct {
 StructContent
 }
 func (m *Menu) TableName() string {
-	return "TableName"
+	return "TableNameStr"
 }
 type columnStructColumnStruct struct {
 StructColunmsType
