@@ -19,7 +19,7 @@ var MysqlToGotype = map[string]string{
 	"tinyint":            "int64",
 	"smallint":           "int64",
 	"mediumint":          "int64",
-	"bigint":             "int64",
+	"bigint":             "uint",
 	"int unsigned":       "int64",
 	"integer unsigned":   "int64",
 	"tinyint unsigned":   "int64",
