@@ -194,7 +194,7 @@ ImportPkg
 type DummyCommand struct {
 StructContent
 }
-func (m *Menu) TableName() string {
+func (m *DummyCommand) TableName() string {
 	return "TableNameStr"
 }
 type columnStructColumnStruct struct {
